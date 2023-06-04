@@ -21,6 +21,7 @@ module.exports = {
   },
   plugins: ['react', '@typescript-eslint', 'react-hooks', 'unicorn', 'import'],
   rules: {
+    'import/prefer-default-export': 'off',
     'import/no-unresolved': 'error',
     'react/jsx-one-expression-per-line': 0,
     'react/prop-types': 0,

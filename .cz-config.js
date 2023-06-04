@@ -71,7 +71,7 @@ module.exports = {
     subject: `请填写简短精炼的提交描述,例如:" 修复微信小程序 d3 模块的编译报错"：\n`,
     body: '填写更加详细的变更描述（可选）。使用 "|" 换行：\n',
     breaking: '列举非兼容性重大的变更（可选）：\n',
-    footer: `通过commit关联（link）、关闭（close）任务 (#issue_ident / issue_url)`,
+    footer: `通过commit关联（link）、关闭（closes）任务 (#issue_ident / issue_url)`,
     confirmCommit: '确认提交？',
   },
   // 设置只有 type 选择了 feat 或 fix，才询问 breaking message
