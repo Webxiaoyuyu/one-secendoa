@@ -1,15 +1,17 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Home from '@/views/Home';
+import { BrowserRouter } from 'react-router-dom';
+import RouterConfig from '@/router';
+import Auth from '@/auth/Auth';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" />} />
-        <Route path="/home" element={<Home />} />
-      </Routes>
-    </Router>
+    <div>
+      <BrowserRouter>
+        <Auth>
+          <RouterConfig />
+        </Auth>
+      </BrowserRouter>
+    </div>
   );
 }
 

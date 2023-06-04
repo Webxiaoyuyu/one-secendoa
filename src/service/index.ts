@@ -1,6 +1,11 @@
 import request from '@/service/request';
+import { AxiosPromise } from 'axios';
 
-export const getInfo = async () => {
-  const res = await request.get('/admin/verifycode');
-  return res.data.sub;
+type IAdminVerifycodeResponseData = {
+  code: number;
+  msg: string;
+  data: { svg: string; no: string };
 };
+
+export const getAdminVerifycode = () =>
+  <AxiosPromise<IAdminVerifycodeResponseData>>request.get('/admin/verifycode');
