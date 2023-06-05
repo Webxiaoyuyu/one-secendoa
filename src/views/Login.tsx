@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { LockOutlined, UserOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import loginImg from '@/assets/Login_image/login.png';
 import logo from '@/assets/logo.svg';
-// import { getAdminVerifycode } from '@/service/index';
+import { getAdminVerifycode, loginIn } from '@/service/index';
 
 export const LoginCss = styled.div`
   .login-content {
@@ -18,15 +20,50 @@ export const LoginCss = styled.div`
 `;
 
 export default function Login() {
+  const navigate = useNavigate();
   // 获取验证图片
-  // const [verifyCodeImg, setVerifyCodeImg] =
-  //   useState<Awaited<ReturnType<typeof getAdminVerifycode>>['data']['data']['svg']>('');
-  // console.log(verifyCodeImg);
-  // useEffect(() => {
-  //   getAdminVerifycode().then((res) => {
-  //     setVerifyCodeImg(res.data.data.svg);
-  //   });
-  // }, []);
+  const [verifyCodeImg, setVerifyCodeImg] =
+    useState<Awaited<ReturnType<typeof getAdminVerifycode>>['data']['data']['svg']>('');
+  const refCodeNo = useRef('');
+  useEffect(() => {
+    getAdminVerifycode().then((res) => {
+      setVerifyCodeImg(res.data.data.svg);
+      refCodeNo.current = res.data.data.no;
+    });
+  }, []);
+  // 点击获取验证码
+  const getCodeImg = () => {
+    getAdminVerifycode().then((res) => {
+      setVerifyCodeImg(res.data.data.svg);
+      refCodeNo.current = res.data.data.no;
+    });
+  };
+  interface IValue {
+    code: string;
+    password: string;
+    username: string;
+  }
+
+  // 登录
+  const onFinish = (values: IValue) => {
+    console.log('Received values of form: ', values);
+    loginIn({
+      adminName: values.username,
+      adminPwd: values.password,
+      no: refCodeNo.current,
+      verifyCode: values.code,
+    }).then((res) => {
+      console.log(res);
+      if (res.data.code === 200) {
+        message.success(res.data.msg, 1, () => {
+          localStorage.setItem('token', '11');
+          navigate('/home');
+        });
+      } else {
+        message.error(res.data.msg, 3);
+      }
+    });
+  };
   return (
     <LoginCss>
       <div className="w-[100vw] h-[100vh] min-w-[1200px] overflow-hidden flex justify-center items-center">
@@ -51,6 +88,7 @@ export default function Login() {
                     initialValues={{
                       remember: true,
                     }}
+                    onFinish={onFinish}
                   >
                     <Form.Item
                       validateTrigger={['onBlur']}
@@ -85,24 +123,32 @@ export default function Login() {
                         placeholder="管理员密码"
                       />
                     </Form.Item>
-                    <Form.Item
-                      validateTrigger={['onBlur']}
-                      name="verificationcode"
-                      rules={[
-                        {
-                          required: true,
-                          message: '请输入验证码',
-                        },
-                      ]}
-                    >
-                      <Input
-                        className="h-[40px] !w-[170px]"
-                        prefix={<SafetyCertificateOutlined />}
-                        type="text"
-                        placeholder="输入验证码"
-                      />
-                      <div className="w-[150px] h-[50px] bg-gray-300">123</div>
-                    </Form.Item>
+                    <div className=" flex items-stretch">
+                      <Form.Item
+                        validateTrigger={['onBlur']}
+                        name="code"
+                        rules={[
+                          {
+                            required: true,
+                            message: '请输入验证码',
+                          },
+                        ]}
+                      >
+                        <Input
+                          className="h-[40px] !w-[170px]"
+                          prefix={<SafetyCertificateOutlined />}
+                          placeholder="输入验证码"
+                        />
+                      </Form.Item>
+                      <div className="w-[150px] h-[50px]" onClick={getCodeImg}>
+                        <img
+                          src={`data:image/svg+xml;base64,${btoa(verifyCodeImg)}`}
+                          alt=""
+                          width="150"
+                          height="50"
+                        />
+                      </div>
+                    </div>
                     <Form.Item className="">
                       <Button
                         type="primary"
