@@ -1,22 +1,28 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
 import Layout from '@/views/Layout';
 import RouterConfig from '@/router';
-import { BrowserRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Auth from '@/auth/Auth';
 
 function App() {
+  const location = useLocation();
+  const [isOK, setIsOK] = useState(localStorage.getItem('token'));
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      setIsOK('ok');
+    } else {
+      setIsOK(null);
+    }
+  }, [location.pathname]);
   return (
     <div>
-      {localStorage.getItem('token') ? (
-        <BrowserRouter>
-          <Layout />
-        </BrowserRouter>
+      {isOK ? (
+        <Layout />
       ) : (
-        <BrowserRouter>
-          <Auth>
-            <RouterConfig />
-          </Auth>
-        </BrowserRouter>
+        <Auth>
+          <RouterConfig />
+        </Auth>
       )}
     </div>
   );
