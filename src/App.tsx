@@ -1,16 +1,23 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import Layout from '@/views/Layout';
 import RouterConfig from '@/router';
+import { BrowserRouter } from 'react-router-dom';
 import Auth from '@/auth/Auth';
 
 function App() {
   return (
     <div>
-      <BrowserRouter>
-        <Auth>
-          <RouterConfig />
-        </Auth>
-      </BrowserRouter>
+      {localStorage.getItem('token') ? (
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      ) : (
+        <BrowserRouter>
+          <Auth>
+            <RouterConfig />
+          </Auth>
+        </BrowserRouter>
+      )}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { LockOutlined, UserOutlined, SafetyCertificateOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import loginImg from '@/assets/Login_image/login.png';
-import logo from '@/assets/Login_image/logo.svg';
+import logo from '@/assets/logo.svg';
 // import { getAdminVerifycode } from '@/service/index';
 
 export const LoginCss = styled.div`
