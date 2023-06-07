@@ -35,6 +35,9 @@ import CUser from '@/views/config/User';
 import CRider from '@/views/config/Rider';
 import CAgreementRider from '@/views/config/AgreementRider';
 
+import UUpdate from '@/views/user/Update';
+import UPwd from '@/views/user/Pwd';
+
 export default function RoutesConfig() {
   return useRoutes([
     {
@@ -159,6 +162,16 @@ export default function RoutesConfig() {
     {
       path: '/config/agreementRider',
       element: <CAgreementRider />,
+    },
+
+    // 个人设置
+    {
+      path: '/user/update',
+      element: <UUpdate />,
+    },
+    {
+      path: '/user/pwd',
+      element: <UPwd />,
     },
   ]);
 }
