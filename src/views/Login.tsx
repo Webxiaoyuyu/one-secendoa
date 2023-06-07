@@ -56,7 +56,6 @@ export default function Login() {
       console.log(res);
       if (res.data.code === 200) {
         message.success(res.data.msg, 1, () => {
-          localStorage.setItem('token', '11');
           navigate('/home');
         });
       } else {
