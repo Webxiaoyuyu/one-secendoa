@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RouterConfig from '@/router';
 import Auth from '@/auth/Auth';
@@ -7,6 +7,31 @@ import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme, Avatar, Space } from 'antd';
 import logo from '@/assets/logo.svg';
+import { getAdminInfo } from '@/service/index';
+import styled from 'styled-components';
+
+function removeCookie(cname: string) {
+  const name = `${cname}=`;
+  const ca = document.cookie.split(';');
+  let cookieStr = '';
+  for (let i = 0; i < ca.length; i++) {
+    const c = ca[i].trim();
+    if (c.indexOf(name) === 0) {
+      document.cookie = `${c};expires=${new Date(0).toUTCString()}`;
+    } else {
+      cookieStr += c;
+      cookieStr += ';';
+    }
+    document.cookie = cookieStr;
+  }
+}
+
+export const LayoutCss = styled.div`
+  .ant-popover-inner {
+    padding: 0 !important;
+    background: red !important;
+  }
+`;
 
 const { Header, Content, Sider } = Layout;
 const menuName = [
@@ -81,6 +106,7 @@ const items2: MenuProps['items'] = [
 
 export default function LayOut(): JSX.Element {
   const navigate = useNavigate();
+  const [isShow, setIsShow] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -93,8 +119,34 @@ export default function LayOut(): JSX.Element {
       navigate(`/${routerUrl[MaxKey].rou}/${routerUrl[MaxKey].children[MinKey]}`);
     }
   };
+  const [loginInfo, setloginInfo] =
+    useState<Awaited<ReturnType<typeof getAdminInfo>>['data']['data']>();
+  // 获取登录个人信息
+  useEffect(() => {
+    getAdminInfo().then((res) => {
+      setloginInfo(res.data.data);
+    });
+  }, []);
+
+  // 点击个人设置
+  const orderSetting = () => {
+    // 跳转到个人设置
+    navigate('/user/update');
+  };
+
+  // 点击修改密码
+  const editPwd = () => {
+    // 跳转到修改密码
+    navigate('/user/pwd');
+  };
+
+  // 退出登录
+  const loginOut = () => {
+    removeCookie('token');
+    navigate('/login');
+  };
   return (
-    <div>
+    <LayoutCss>
       <Layout className=" w-full h-[100vh]">
         <Header
           style={{ display: 'flex', alignItems: 'center' }}
@@ -105,10 +157,49 @@ export default function LayOut(): JSX.Element {
               <img className=" overflow-hidden h-[30px]" src={logo} alt="" />
               <span className=" text-[20px] ml-[12px] font-bold">一秒快送后台管理系统</span>
             </div>
-            <div>
-              <Space wrap size={16}>
-                <Avatar size={32} icon={<UserOutlined />} />
-              </Space>
+            <div
+              className=" relative"
+              onClick={() => {
+                setIsShow(!isShow);
+              }}
+            >
+              {loginInfo?.avatarUrl === null ? (
+                <Space wrap size={16} className="">
+                  <Avatar size={32} icon={<UserOutlined />} />
+                </Space>
+              ) : (
+                <img className="w-[32px] rounded-full" src={loginInfo?.avatarUrl} alt="" />
+              )}
+              {isShow ? (
+                <div className=" w-[240px] absolute top-[60px] right-0 rounded-[12px] z-[999] shadow-md">
+                  <div className=" px-[20px] bg-gradient-to-r from-[#a18cd1] to-[#fbc2eb]">
+                    <div className=" flex w-full h-[26px] text-[#fff] text-[22px]">
+                      <span>{loginInfo?.realName}</span>
+                      <span className=" ml-[12px]">{loginInfo?.mobileNumber}</span>
+                    </div>
+                    <div className=" text-[#fff]">NO:{loginInfo?.adminNo}</div>
+                  </div>
+                  <div className="">
+                    <div
+                      className="px-[20px] h-[50px] leading-[50px] hover:bg-[#f4eeee]"
+                      onClick={orderSetting}
+                    >
+                      个人设置
+                    </div>
+                    <div
+                      className="px-[20px] h-[50px] leading-[50px] hover:bg-[#f4eeee]"
+                      onClick={editPwd}
+                    >
+                      修改密码
+                    </div>
+                  </div>
+                  <div className=" border-t border-solid border-[#eee]">
+                    <div className="px-[20px] hover:bg-[#f4eeee]" onClick={loginOut}>
+                      退出登录
+                    </div>
+                  </div>
+                </div>
+              ) : null}
             </div>
           </div>
         </Header>
@@ -142,6 +233,6 @@ export default function LayOut(): JSX.Element {
           </Layout>
         </Layout>
       </Layout>
-    </div>
+    </LayoutCss>
   );
 }
