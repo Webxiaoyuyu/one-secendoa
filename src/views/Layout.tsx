@@ -225,6 +225,7 @@ export default function LayOut(): JSX.Element {
                 minHeight: 280,
                 background: colorBgContainer,
               }}
+              className=" overflow-hidden overflow-y-auto"
             >
               <Auth>
                 <RouterConfig />

@@ -3,7 +3,6 @@ import React from 'react';
 import { useRoutes, Navigate } from 'react-router-dom';
 import Home from '@/views/Home';
 import Login from '@/views/Login';
-// import UAgent from '@/views/user/Agent';
 import UAdmins from '@/views/user/Admins';
 import UUsers from '@/views/user/Users';
 
@@ -38,6 +37,11 @@ import CAgreementRider from '@/views/config/AgreementRider';
 import UUpdate from '@/views/user/Update';
 import UPwd from '@/views/user/Pwd';
 
+import UAgent from '@/views/user/agent/Agent';
+import UAdmin from '@/views/user/agent/Admin';
+import UAdd from '@/views/user/agent/Add';
+import UAdminAdd from '@/views/user/agent/AdminAdd';
+
 export default function RoutesConfig() {
   return useRoutes([
     {
@@ -53,10 +57,22 @@ export default function RoutesConfig() {
       element: <Login />,
     },
     // 用户管理user
-    // {
-    //   path: '/user/agent/agents',
-    //   element: <UAgent />,
-    // },
+    {
+      path: '/user/agent/agents',
+      element: <UAgent />,
+    },
+    {
+      path: '/user/agent/agents/add',
+      element: <UAdd />,
+    },
+    {
+      path: '/user/agent/admin',
+      element: <UAdmin />,
+    },
+    {
+      path: '/user/agent/adminadd',
+      element: <UAdminAdd />,
+    },
     {
       path: '/user/admins',
       element: <UAdmins />,
